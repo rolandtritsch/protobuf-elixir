@@ -19,8 +19,9 @@ defmodule ProtoBench.MixProject do
 
   defp deps do
     [
-      {:protobuf, path: ".."},
-      {:benchee, "~> 1.0", only: :dev}
+      {:benchee, "~> 1.0", only: :dev},
+      {:google_protos, "~> 0.1"},
+      {:protobuf, "~> 0.5"}
     ]
   end
 end

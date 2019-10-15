@@ -1,21 +1,29 @@
-# TODO: group of proto2 is not supported
-sets =
-  Path.wildcard("**/dataset.google_message1*.pb")
-  |> Enum.map(&ProtoBench.load(&1))
-  |> Enum.reduce(%{}, fn %{payload: [payload]} = s, acc ->
-    mod = ProtoBench.mod_name(s.message_name)
-    msg = mod.decode(payload)
-    # IO.inspect(msg)
-    acc
-    |> Map.put(s.name <> " Decode", fn -> mod.decode(payload) end)
-    |> Map.put(s.name <> " Encode", fn -> mod.encode(msg) end)
-  end)
+event = Event.new(
+  when: Day.new(
+    day: 01,
+    month: 01,
+    year: 1970,
+    week_day: :MONDAY
+  ),
+  what: "hiking"
+)
+IO.puts("event: #{:erts_debug.size(event)}")
 
-Benchee.run(
-  sets,
-  time: 10,
-  formatters: [
-    Benchee.Formatters.Console
-  ],
+event_encoded = Event.encode(event)
+IO.puts("event_encoded: #{:erts_debug.size(event_encoded)}")
+
+event_decoded = Event.decode(event_encoded)
+IO.puts("event_decoded: #{:erts_debug.size(event_decoded)}")
+IO.puts("")
+
+events_decoded = 1..10_000 |> Enum.map(fn _ -> event_decoded end)
+events_encoded = 1..10_000 |> Enum.map(fn _ -> event_encoded end)
+
+Benchee.run(%{
+    "encode" => fn ->  [event_decoded] |> Enum.each(&Event.encode/1) end,
+    "decode" => fn ->  [event_encoded] |> Enum.each(&Event.decode/1) end,
+    "encode 10_000" => fn ->  events_decoded |> Enum.each(&Event.encode/1) end,
+    "decode 10_000" => fn ->  events_encoded |> Enum.each(&Event.decode/1) end
+  },
   memory_time: 2
 )

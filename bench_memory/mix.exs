@@ -21,7 +21,8 @@ defmodule ProtoBench.MixProject do
     [
       {:benchee, "~> 1.0", only: :dev},
       {:google_protos, "~> 0.1"},
-      {:protobuf, "~> 0.5"}
+      {:protobuf, "~> 0.5"},
+      {:randomizer, "~> 1.1"}
     ]
   end
 end

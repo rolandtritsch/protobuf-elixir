@@ -19,5 +19,5 @@ message Day {
 
 message Event {
   Day when = 1;
-  string what = 2;
+  repeated string what = 2;
 }

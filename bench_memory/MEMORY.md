@@ -76,7 +76,8 @@ The first two tests encode and decode the smaller batches.
 
 The main take-a-ways here are ...
 
-* decoding a 256b event takes 1.5kb of main memory
+* decoding back to a 256b event takes 1.5kb of main memory
+* decoding back to a ~2560b event takes 10kb of main memory
 * decoding 10 of these takes 10 times the memory
 
 ... more on this further down.
@@ -173,7 +174,7 @@ We are running 4 tests with 4 batches of one event. Every event is 10 times bigg
 The main take-a-ways are ...
 
 * memory usage scales linear with a factor of 1.5 for the size of the event (10 time bigger event, needs 1.5 times the memory)
-* for events of size 256b we get 1.5kb main mem usage. For an event of 500b we get (roughly) 2.6kb of main mem usage per event (we measured/verified this)
+* for events of size 256b we get 1.5kb main mem usage. For an event of 1.5kb we get (roughly) 8kb of main mem usage per event (we measured/verified this)
 
 ```
 Operating System: Linux
@@ -271,8 +272,11 @@ decode 1-1000      1554.69 KB - 1000.00x memory usage +1553.13 KB
 
 ### Summary
 
-With the numbers and behavior we have we should see a main mem usage of ...
+With the numbers and behavior above we can conclude ...
 
-`2.5kb * 400k ~ 1gb`
-
-... but we see `3.6gb`.
+* we have ~400k of encoded events
+* they are ~0.5k/each (encoded)
+* the average size of every decoded event is ~1.5k
+* means we expect a memory usage of (400k * 0.5k) + (400k * 1.5k) ~ 800k
+* unfortunatly we can measure that decoding an event of (resulting) size 1.5k takes 8k of mem
+* means we are looking at a main mem usage of at least 400k * 8k ~ 3.2gb

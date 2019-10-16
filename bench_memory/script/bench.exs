@@ -35,49 +35,12 @@ defmodule TestHelpers do
   end
 end
 
-one_one = TestHelpers.generate(1, 1)
-one_ten = TestHelpers.generate(1, 10)
-ten_one = TestHelpers.generate(40, 1)
-ten_ten = TestHelpers.generate(40, 10)
-
-hundred_one = TestHelpers.generate(400, 1)
-thousand_one = TestHelpers.generate(4000, 1)
-
-one_hundred = TestHelpers.generate(1, 100)
-one_thousand = TestHelpers.generate(1, 1000)
+initial_case = TestHelpers.generate(1, 1)
+test_case = TestHelpers.generate(25, 400)
 
 Benchee.run(%{
-    "encode 1-1" => fn ->  one_one[:decoded] |> Enum.each(&Event.encode/1) end,
-    "encode 1-10 " => fn ->  one_ten[:decoded] |> Enum.each(&Event.encode/1) end,
-    "encode 10-1" => fn ->  ten_one[:decoded] |> Enum.each(&Event.encode/1) end,
-    "encode 10-10" => fn ->  ten_ten[:decoded] |> Enum.each(&Event.encode/1) end
-  },
-  memory_time: 2
-)
-
-Benchee.run(%{
-    "decode 1-1" => fn ->  one_one[:encoded] |> Enum.each(&Event.decode/1) end,
-    "decode 1-10" => fn ->  one_ten[:encoded] |> Enum.each(&Event.decode/1) end,
-    "decode 10-1" => fn ->  ten_one[:encoded] |> Enum.each(&Event.decode/1) end,
-    "decode 10-10" => fn ->  ten_ten[:encoded] |> Enum.each(&Event.decode/1) end
-  },
-  memory_time: 2
-)
-
-Benchee.run(%{
-    "decode 1-1" => fn ->  one_one[:encoded] |> Enum.each(&Event.decode/1) end,
-    "decode 10-1" => fn ->  ten_one[:encoded] |> Enum.each(&Event.decode/1) end,
-    "decode 100-1" => fn ->  hundred_one[:encoded] |> Enum.each(&Event.decode/1) end,
-    "decode 1000-1" => fn ->  thousand_one[:encoded] |> Enum.each(&Event.decode/1) end
-  },
-  memory_time: 2
-)
-
-Benchee.run(%{
-    "decode 1-1" => fn ->  one_one[:encoded] |> Enum.each(&Event.decode/1) end,
-    "decode 1-10" => fn ->  one_ten[:encoded] |> Enum.each(&Event.decode/1) end,
-    "decode 1-100" => fn ->  one_hundred[:encoded] |> Enum.each(&Event.decode/1) end,
-    "decode 1-1000" => fn ->  one_thousand[:encoded] |> Enum.each(&Event.decode/1) end
+    "decode initial" => fn ->  initial_case[:encoded] |> Enum.each(&Event.decode/1) end,
+    "decode test" => fn ->  test_case[:encoded] |> Enum.each(&Event.decode/1) end,
   },
   memory_time: 2
 )
